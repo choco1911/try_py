@@ -1,0 +1,6 @@
+dog
+cat
+goose
+horse
+mouse
+spider

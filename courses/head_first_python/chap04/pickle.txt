@@ -1,0 +1,8 @@
+(lp0
+I1
+aI2
+aS'apple'
+p1
+aS'pie'
+p2
+a.

@@ -1,0 +1,6 @@
+dog: bite
+cat: sleep
+man hunt
+snike: fly
+spider: run : fast
+bat: fly

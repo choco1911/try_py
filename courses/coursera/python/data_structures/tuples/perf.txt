@@ -1,0 +1,37 @@
+1.5. Performance Is Challenging
+Systems performance engineering is a challenging field for a number of reasons, including the fact that it is subjective, it is complex, and it often involves multiple issues.
+
+1.5.1. Performance Is Subjective
+Technology disciplines tend to be objective, so much so that people in the industry are known for seeing in black and white. This can be true of software troubleshooting, where a bug is either present or absent and is either fixed or not fixed. Such bugs often manifest as error messages that can be easily interpreted and understood to mean the presence of an error.
+
+Performance, on the other hand, is often subjective. With performance issues, it can be unclear whether there is an issue to begin with, and if so, when it has been fixed. What may be considered “bad” performance for one user, and therefore an issue, may be considered “good” performance for another.
+
+Consider the following information:
+
+The average disk I/O response time is 1 ms.
+
+Is this “good” or “bad”? While response time, or latency, is one of the best metrics available, interpreting latency information is difficult. To some degree, whether a given metric is “good” or “bad” may depend on the performance expectations of the application developers and end users.
+
+Subjectivity can be made objective by defining clear goals, such as having a target average response time, or requiring a percentage of requests to fall within a certain latency range. Other ways to deal with this subjectivity are introduced in Chapter 2, Methodology, including latency analysis for expressing issues as a ratio of their operation latency.
+
+1.5.2. Systems Are Complex
+In addition to subjectivity, performance can be a challenging discipline due to the complexity of systems and the lack of a clear starting point for analysis. Sometimes we begin with a guess, such as blaming the network, and the performance analyst must figure out if this is even the right direction.
+
+Performance issues may also originate from complex interactions between subsystems that perform well when analyzed in isolation. This can occur due to a cascading failure, when one failed component causes performance issues in others. To understand the resulting issue, you must untangle the relationships between components and understand how they contribute.
+
+Bottlenecks can also be complex and related in unexpected ways; fixing one may simply move the bottleneck elsewhere in the system, with overall performance not improving as much as hoped.
+
+Apart from the complexity of the system, performance issues may be caused by a complex characteristic of the production workload. In these cases, they may never be reproducible in a lab environment, or only intermittently so.
+
+Solving complex performance issues often requires a holistic approach. The whole system—both its internals and its external interactions—may need to be investigated. This requires a wide range of skills, not typically found in one person, and can make performance engineering a varied and intellectually challenging line of work.
+
+Different methodologies can be used to guide us through these complexities, as introduced in Chapter 2; Chapters 6 to 10 include specific methodologies for the system resources: CPUs, Memory, File Systems, Disks, and Network.
+
+1.5.3. There Can Be Multiple Performance Issues
+Finding a performance issue is usually not the problem; in complex software there are often many. To illustrate this, try finding the bug database for your operating system or applications and search for the word performance. You might be surprised! Typically, there will be a number of performance issues that are known but not yet fixed, even in mature software that is considered to have high performance. This poses yet another difficulty when analyzing performance: the real task isn’t finding an issue, it’s identifying the issue or issues that matter the most.
+
+To do this, the performance analyst must quantify the magnitude of issues. Some performance issues may not apply to your workload or may apply only to a very small degree. Ideally, you will not just quantify the issues but also estimate the speedup if each is fixed. This information can be valuable when management looks for justification for spending engineering or operations resources.
+
+A metric well suited to performance quantification, when available, is latency.
+
+

@@ -1,0 +1,7 @@
+apple
+bat
+cat
+rat
+mouse
+house
+noise

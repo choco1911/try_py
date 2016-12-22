@@ -1,0 +1,7 @@
+### activate and deactivate python virtual envirenment
+
+Activate python local envirenment:
+	source ../env/bin/activate
+
+Deactivate python local envirenment:
+	deactivate
