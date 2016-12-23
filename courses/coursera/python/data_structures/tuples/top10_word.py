@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-lchar = [',','"','.']
+pynct = [',','"','.']
 
 fhand = open('perf.txt')
 count = dict()
@@ -9,7 +9,7 @@ for line in fhand:
     list_w = line.split()
 
     for word in list_w:
-        for dc in lchar:
+        for dc in pynct:
             word = word.strip(dc).lower()
 #       if word not in count :
 #            count[word] = 1
