@@ -7,7 +7,6 @@ import re
 servs = dict()
 
 print('Start download data')
-
 url = 'http://mailmon2.rambler.ru/cgi-bin/hddsmart.cgi?host=saddam2.rambler.ru&hdd=sdc'
 
 req = u.Request(url)
@@ -26,9 +25,14 @@ for data in shtml :
         hdd_attr = re.finditer(r'(?:<span class=\"(?:var|bar-value)\"|[^/]span+?)>(?!Host:)([^<].+?)</', data)
         for item in hdd_attr :
                list_attr.append(item.group(1))
-print list_attr
 
-#print len(list_attr)
+for num,item in enumerate(list_attr[:6] + list_attr[8:10] + list_attr[-2:]):
+    if item == 'RRDs:' : continue
+    if 'span' in item : item = item[0] + item[-1]
+    if num % 2 == 0:
+        title = item
+    else:
+        value = item
+        if 'value' in globals():
+            print title, value
 
-#if len(hdd_attr)> 0 :
-#     print hdd_attr
