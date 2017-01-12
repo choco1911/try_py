@@ -2,8 +2,10 @@
 
 #### Var1
 def power(exponent):
+    print 'exponent equels:', exponent
     return lambda num : num ** exponent
 
+print 'what return function power(3)???', power(3)
 func = power(3)
 print func(2)
 

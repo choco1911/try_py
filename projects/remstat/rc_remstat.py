@@ -2,12 +2,9 @@
 
 import urllib2 as u
 import re
-import operator
-
+import operator 
 
 servs = dict()
-
-#print('Start download data')
 
 web_page = 'http://mailmon2.rambler.ru/cgi-bin/problem.cgi?report=hdd_smart_attributes&attr=5'
 
@@ -40,18 +37,10 @@ def parseHtml(htmlString):
 
 def getDiskinfo(server,disk):
     servs = dict()
-
-    #print('Start download data')
     url = "http://mailmon2.rambler.ru/cgi-bin/hddsmart.cgi?host={0}&hdd={1}".format(server, disk)
-
     req = u.Request(url)
-
     html1 = u.urlopen(req).read()
-
-    #print('Get data from site')
-
     shtml=html1.split('\n')
-
 
     list_attr = []
     for data in shtml :
@@ -74,6 +63,12 @@ def getDiskinfo(server,disk):
             if 'value' in locals():
                 yield title, value
 
+def exServer(domain):
+    excList=['corvus','search','mon','piclist','netmon','mailmon']
+    for exclude in excList:
+        if domain.startswith(exclude): return None 
+    return domain
+
 
 res = dict()
 for server in parseHtml(getHtml(web_page)) :
@@ -82,9 +77,14 @@ for server in parseHtml(getHtml(web_page)) :
 
 sorted_x = sorted(res, key=lambda i: int(res[i]), reverse=True)
 
+ccc=1
 for it in sorted_x[:10] :
+#for it in sorted_x :
     serv,hdd = it
-    print serv,hdd,res[it]
-    for t,l in getDiskinfo(serv,hdd) : 
-        print " " * 4, t,l
+    serv = exServer(serv)
+    if serv :
+        print ccc,serv,hdd,res[it]
+        ccc += 1
+        for t,l in getDiskinfo(serv,hdd) : 
+            print " " * 4, t,l
 
