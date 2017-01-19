@@ -9,22 +9,35 @@ def main():
     port=8274
     filename = 'hosts.rambler'
     domains = fileRead(filename)
-    aaa = printOut(port,domains)
-    print aaa
+    tupled_domain_ip = checkDom_ip(port,domains)
+    gogo(tupled_domain_ip)
 
-def printOut(port,*args):
+def gogo(*args):
+    t_domain_ip = args[0]
+    for domain, ipaddr in t_domain_ip:
+        print domain, ipaddr, [ doms[0] for doms in t_domain_ip ]
+### Break loop
+        break
+
+def checkDom_ip(port,*args):
     doms = args[0]
-    lll = []
+    lll = [] 
     for domain in doms:
         ipaddr = resolvDomain(domain)
         if ipaddr : 
             port_status = checkService(domain,port)
-            if not port_status:
+            if port_status:
+                 #print '{0} {1} CGP web-panel is avaluable! HTTP Port {2}: open. Go on!'.format(domain, ipaddr, port)
+                 dom_ip = (domain,ipaddr)
+                 lll.append(dom_ip)
+            else:
+                 #### log servers that off or not working on time when script runs
                  print '{0} {1} CGP web-panel is not avaluable! HTTP Port {2}: closed'.format(domain, ipaddr, port)
                  lll.append('{0} {1} CGP web-panel is not avaluable! HTTP Port {2}: closed'.format(domain, ipaddr, port))
-            else:
-                 print '{0} {1} CGP web-panel is avaluable! HTTP Port {2}: open. Go on!'.format(domain, ipaddr, port)
                  #lll.append('{0} {1} CGP web-panel is avaluable! HTTP Port {2}: open. Go on!'.format(domain, ipaddr, port))
+        else:
+            print 'There isn\'t record for the domain {0}'.format(domain)
+
     return lll
                 
 def resolvDomain(domain):
