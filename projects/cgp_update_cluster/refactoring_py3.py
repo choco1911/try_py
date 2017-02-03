@@ -5,18 +5,22 @@ import requests
 import time 
 
 def main():
-    cmd_domains = ['mail2027','mail2026']
+    ### Testing single and multiple domains
+    #cmd_domains = ['mail2027','mail2026']
     #cmd_domains = []
+    cmd_domains = ['mail2027']
+
     port=8274
     filename = 'server_names.txt'
 
-    domains = fileRead(filename)
+    domains = sortedDomains(fileRead(filename))
 
     ### Return tuple (server_name, ip)
     tupled_domain_ip = checkDom_ip(domains,port)
+
+    print('Start enable settings')
     if cmd_domains:
-        #go_single(tupled_domain_ip,cmd_domains)
-        cmd_domains = [ toFqdn(cutDomain(cmd_dom)) for cmd_dom in cmd_domains ]
+        cmd_domains = sortedDomains(cmd_domains) 
         tupled_cmd_domain_ip = checkDom_ip(cmd_domains,port)
         go_mult(tupled_domain_ip,tupled_cmd_domain_ip)
     else:
@@ -37,8 +41,13 @@ def go_mult(t_domain_ip,tupled_cmd_domain_ip=None):
         #print domain, ipaddr, domain_list
         print(domain, ipaddr)
         payload = create_payload(domain,ipaddr,domain_list)
-        print(payload)
-#       addBackends(domain,payload)
+
+#### Permit commiting payload to the mailservers
+#       print(payload)
+       # addBackends(domain,payload)
+       # Print Response from server 
+       # It can be parsed and checked!
+       #print(addBackends(domain,payload))
 ### Break loop
 #        break
 
@@ -100,14 +109,24 @@ def create_payload(server_name, server_ip, backend_servers, fallback_ip = '81.19
 def addBackends(host,payload) :
       #  print(host,payload)
 
+      try:
         url="http://{0}:8274/Master/Settings/Cluster.html?".format(host)
-        session = requests.Session()
-        session.get(url , auth=('pm', '11'))
+        with requests.Session() as session :
+            r = session.post(url , auth=('pm', '11'), data=payload ) 
+            return r.text
+     
+      except requests.exceptions.HTTPError as err:
+          print('Oops. HTTP Error occured')
+          print('Response is: {content}'.format(content=err.resp.content))
+      except requests.exceptions.Timeout:
+          print('Oops. Timeout!')
+      except requests.exceptions.ConnectionError:
+          print('Seems like dns lookup failed...')
 
-        r = session.post(url , auth=('pm', '11'), data=payload ) 
-        return r.text
+     
 
 def checkDom_ip(doms,port):
+    print('Checking server port is openned...')
     backends = [] 
     for domain in doms:
         ipaddr = resolvDomain(domain)
@@ -159,7 +178,7 @@ def toFqdn(num):
     return 'mail{0}.rambler.ru'.format(num)
 
 def cutDomain(host):
-    host = host.strip().strip('mail')
+    host = host.strip().lstrip('mail')
     if host.find('.') != -1: 
         num = host[:host.index('.')]
     else:
@@ -167,28 +186,54 @@ def cutDomain(host):
     return num 
 
 def fileRead(filename):
-    listofnums = []
+    print('Readding data from file...')
     try:
         with open(filename, "r") as fhandler :
+            lines = []
             for line in fhandler:
-                if line :
-                    listofnums.append(cutDomain(line))
-            listofnums = list(set(listofnums))
-            sortednums = sorted(listofnums, key=int)
-            return [ toFqdn(num) for num in sortednums ]
+                if line.strip():
+                     lines.append(line)
+            ### Pochemy to vozvrashaet pustoty pri srabativanii exception
+            ### yield line 
+            return lines 
 
     except IOError as err :
             print('File Error:', str(err))
             return fileRead(getNamesfromWeb(filename))
-            #return None
+
+def sortedDomains(listofdomains): 
+        listofnums = []
+        for domain in listofdomains:
+            listofnums.append(cutDomain(domain))
+        listofnums = list(set(listofnums))
+        sortednums = sorted(listofnums, key=int)
+        return [ toFqdn(num) for num in sortednums ]
+
 
 def getNamesfromWeb(filename) :
-        url="http://mailmon2.rambler.ru/cgi-bin/rpc.cgi?function=get_host_list&project=mail&role=storage"
-        s = requests.get(url)
+    print('Trying to get data from web-monitoring...')
+    try:
+       url="http://mailmon2.rambler.ru/cgi-bin/rpc.cgi?function=get_host_list&project=mail&role=storage"
+       resp = requests.get(url)
+       resp = resp.text
+       return writeTofile(filename,resp)
+    
+    except requests.exceptions.HTTPError as err:
+        print('Oops. HTTP Error occured')
+        print('Response is: {content}'.format(content=err.resp.content))
+    except requests.exceptions.Timeout:
+        print('Oops. Timeout!')
+    except requests.exceptions.ConnectionError:
+        print('Seems like dns lookup failed...')
 
-        with open(filename, "w") as fff:
-            fff.write(s.text)
-            return filename
+def writeTofile(filename,text): 
+    print('Writting data to file...')
+    with open(filename, "w") as outputFile:
+        outputFile.write(text)
+    return filename
+
+    
+
 
 if __name__== '__main__' :
     main()
