@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+
+import requests
+from bs4 import BeautifulSoup 
+ 
+def getBackends(host) :
+
+      try:
+        url="http://{0}:8274/Master/Settings/Cluster.html?".format(host)
+        with requests.Session() as session :
+            r = session.get(url , auth=('pm', '11')) 
+            return r.text
+     
+      except requests.exceptions.HTTPError as err:
+          print('Oops. HTTP Error occured')
+          print('Response is: {content}'.format(content=err.resp.content))
+      except requests.exceptions.Timeout:
+          print('Oops. Timeout!')
+      except requests.exceptions.ConnectionError:
+          print('Seems like dns lookup failed...')
+
+
+host = 'mail2027.rambler.ru'
+page = getBackends(host)
+
+#print(page)
+bs = BeautifulSoup(page)
+####################################################################
+#print(bs.title)
+
+#print(bs.find_all("input"))
+
+#header_children = [c for c in bs.head.children]
+#header_children = [c for c in bs.body.children]
+
+#header_children = bs.input['name']
+
+#print(header_children)
+####################################################################
+
+
+ress = bs.find_all('input')
+#print(ress)
+
+vals = []
+for inx,link in enumerate(ress):
+#    if ress[inx].get('value') != ress[inx + 1].get('value') and inx+1 <= len(ress)1:
+#    if inx+1 < len(ress) and ress[inx].get('type') == 'text' and ress[inx].get('value') != ress[inx + 1].get('value') :
+    if inx+1 < len(ress) and ress[inx].get('value') != ress[inx + 1].get('value') :
+        value = link.get('value')
+        if value:
+            vals.append(value)
+
+#print(arr_values.index('0'))
+#print(arr_values[arr_values.index('0'):-2])
+#print(arr_values[-5:-2])
+#print(vals)
+
+#print(type(aaa))
+#print(aaa.next())
+
+aaa = iter(vals)
+
+while True :
+    try:
+        start = aaa.__next__()
+        if start == '0':
+           print(start)
+           while True:
+                sss = aaa.__next__()
+                if sss != 'Reset' and sss != 'Update':
+                    print(sss) 
+        else: 
+            continue
+    except StopIteration:
+        break

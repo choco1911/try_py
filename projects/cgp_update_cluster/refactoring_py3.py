@@ -44,7 +44,7 @@ def go_mult(t_domain_ip,tupled_cmd_domain_ip=None):
 
 #### Permit commiting payload to the mailservers
 #       print(payload)
-       # addBackends(domain,payload)
+        addBackends(domain,payload)
        # Print Response from server 
        # It can be parsed and checked!
        #print(addBackends(domain,payload))
