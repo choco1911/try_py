@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+
+import requests
+from bs4 import BeautifulSoup 
+ 
+def main():
+    host = 'mail2027.rambler.ru'
+    soup_page(getBackends(host))
+    
+def getBackends(host) :
+
+      try:
+        url="http://{0}:8274/Master/Settings/Cluster.html?".format(host)
+        with requests.Session() as session :
+            r = session.get(url , auth=('pm', '11')) 
+            return r.text
+     
+      except requests.exceptions.HTTPError as err:
+          print('Oops. HTTP Error occured')
+          print('Response is: {content}'.format(content=err.resp.content))
+      except requests.exceptions.Timeout:
+          print('Oops. Timeout!')
+      except requests.exceptions.ConnectionError:
+          print('Seems like dns lookup failed...')
+
+def soup_page(page):
+    bs = BeautifulSoup(page)
+    ress = bs.find_all('input')
+
+    vals = []
+    for inx,link in enumerate(ress):
+        if inx+1 < len(ress) and ress[inx].get('value') != ress[inx + 1].get('value') :
+            value = link.get('value')
+            if value:
+                vals.append(value)
+
+    valsIter = iter(vals)
+
+    while True:
+        try:
+            begin = valsIter.__next__()
+            if begin == '0':
+               print(begin)
+               while True:
+                    contin = valsIter.__next__()
+                    if contin != 'Reset' and contin != 'Update':
+                        print(contin) 
+            else: 
+                continue
+
+        except StopIteration:
+                  break
+
+if __name__ =='__main__':
+    main()

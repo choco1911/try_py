@@ -6,8 +6,6 @@ import time
 
 def main():
     ### Testing single and multiple domains
-    #cmd_domains = ['mail2027','mail2026']
-    #cmd_domains = []
     cmd_domains = ['mail2027']
 
     port=8274
@@ -44,7 +42,7 @@ def go_mult(t_domain_ip,tupled_cmd_domain_ip=None):
 
 #### Permit commiting payload to the mailservers
 #       print(payload)
-        addBackends(domain,payload)
+    #    addBackends(domain,payload)
        # Print Response from server 
        # It can be parsed and checked!
        #print(addBackends(domain,payload))
@@ -147,7 +145,6 @@ def resolvDomain(domain):
                 try:
                     ip = socket.gethostbyname(domain)
                     return ip
-                #except socket.error, msg:
                 except socket.gaierror as err:
                     # print(domain, err.errno, err.strerror)
                      if err.errno != -2 :
