@@ -7,7 +7,6 @@ import time
 def main():
     ### Testing single and multiple domains
     cmd_domains = ['mail2027']
-
     port=8274
     filename = 'server_names.txt'
 
@@ -224,13 +223,12 @@ def getNamesfromWeb(filename) :
         print('Seems like dns lookup failed...')
 
 def writeTofile(filename,text): 
+    stext = sortedDomains(text.split()) 
     print('Writting data to file...')
+
     with open(filename, "w") as outputFile:
-        outputFile.write(text)
+        outputFile.write('\n'.join(stext))
     return filename
-
-    
-
 
 if __name__== '__main__' :
     main()

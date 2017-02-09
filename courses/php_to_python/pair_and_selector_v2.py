@@ -16,8 +16,8 @@ def cdr(pair):
 
 pair = cons(1,3)
 
-print car(pair)
-print cdr(pair)
+#print car(pair)
+#print cdr(pair)
 
 ###
 print(pair('car'))
